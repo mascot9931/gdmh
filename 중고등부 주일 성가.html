@@ -1,0 +1,536 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>중고등부 주일 성가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column "주보" — the Sunday header on top, four slots of the Mass in order, tabs for 기록 and 성가 목록. Accent follows the liturgical colour of the chosen day. */
+:root{
+  --bg:#f5f6f3; --surface:#ffffff; --ink:#1f2622; --muted:#5f6a64; --line:#dde2dc; --soft:#eceee9;
+  --lit-green:#2f7a4c; --lit-violet:#6a4296; --lit-white:#a07a1f; --lit-red:#b0363a; --lit-rose:#b55a7c;
+  --lit:var(--lit-green);
+  --warn:#9a5b00; --ok:#2f7a4c;
+  --f-display:"Gowun Batang","Nanum Myeongjo",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151917; --surface:#1d2320; --ink:#e7ebe8; --muted:#9aa59f; --line:#2f3733; --soft:#242b28;
+  --lit-green:#6cc08d; --lit-violet:#b597de; --lit-white:#e2bf63; --lit-red:#ec7b7d; --lit-rose:#e597b5;
+  --warn:#e3a650; --ok:#6cc08d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151917; --surface:#1d2320; --ink:#e7ebe8; --muted:#9aa59f; --line:#2f3733; --soft:#242b28;
+  --lit-green:#6cc08d; --lit-violet:#b597de; --lit-white:#e2bf63; --lit-red:#ec7b7d; --lit-rose:#e597b5;
+  --warn:#e3a650; --ok:#6cc08d; color-scheme:dark}
+body[data-lit="녹"]{--lit:var(--lit-green)} body[data-lit="자"]{--lit:var(--lit-violet)}
+body[data-lit="백"]{--lit:var(--lit-white)} body[data-lit="홍"]{--lit:var(--lit-red)} body[data-lit="장미"]{--lit:var(--lit-rose)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-weight:700;text-wrap:balance;margin:0}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--lit);outline-offset:2px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+
+/* Sunday header */
+.day{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--lit);border-radius:10px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.dayrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dayrow input[type=date]{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:6px 8px}
+.iconbtn{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:6px 10px;cursor:pointer}
+.iconbtn:hover{border-color:var(--lit)}
+.dayname{font-family:var(--f-display);font-size:clamp(26px,5.5vw,36px);line-height:1.2;color:var(--ink)}
+.dayname small{display:block;font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400;letter-spacing:.02em;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--ink);white-space:nowrap}
+.chip.lit{background:var(--lit);color:var(--surface);font-weight:600}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--lit)}
+.chip a{color:inherit}
+.daynote{font-size:13px;color:var(--muted);margin:0}
+.readings{display:flex;flex-direction:column;gap:6px;margin-top:-4px}
+.rlist{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:13.5px;line-height:1.5}
+.rlist dt{color:var(--muted);font-size:12px;padding-top:1px;white-space:nowrap}
+.rlist dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.rlist dd.go{font-weight:600}
+.rmeta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:11.5px;color:var(--muted)}
+.rmeta button{background:none;border:none;padding:0;color:var(--lit);font-size:11.5px;cursor:pointer;text-decoration:underline}
+.rform{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 12px}
+.rform input{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:6px 8px;width:100%;min-width:0}
+a{color:var(--lit)}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{background:none;border:none;padding:10px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--lit)}
+
+/* controls */
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 16px}
+.ctl{display:flex;flex-direction:column;gap:5px;min-width:0}
+.ctl label,.lbl{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface)}
+.seg button{flex:1;border:none;background:none;padding:7px 4px;cursor:pointer;font-size:13.5px;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--lit);color:var(--surface);font-weight:600}
+.ctl select,.ctl input[type=text],.fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 9px;width:100%;min-width:0}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:9px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--lit)}
+.btn.primary{background:var(--lit);border-color:var(--lit);color:var(--surface)}
+.btn.danger{color:var(--lit-red);border-color:var(--lit-red)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.status{font-size:13px;color:var(--muted)}
+
+/* slots */
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px}
+@media (max-width:440px){.slots{grid-template-columns:1fr}}
+.slot{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 14px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.slot-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.slot-h h3{font-family:var(--f-display);font-size:19px}
+.slot-h .count{font-size:12px;color:var(--muted)}
+.pick{display:flex;gap:12px;align-items:flex-start}
+.pick .no{font-family:var(--f-num);font-size:26px;line-height:1;color:var(--lit);min-width:3.2ch}
+.pick .t{font-size:17px;font-weight:600;line-height:1.3}
+.why{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.why span{font-size:11.5px;padding:2px 7px;border-radius:4px;background:var(--soft);color:var(--muted)}
+.why span.warn{color:var(--warn)}
+.alts{list-style:none;margin:0;padding:0;border-top:1px dashed var(--line)}
+.alts li{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px;min-width:0}
+.alts li:last-child{border-bottom:none}
+.alts .no{font-family:var(--f-num);color:var(--muted);min-width:3.2ch}
+.alts .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alts .sc{font-size:11.5px;color:var(--muted)}
+.alts button{border:1px solid var(--line);background:none;border-radius:5px;padding:2px 8px;font-size:12px;cursor:pointer}
+.alts button:hover{border-color:var(--lit);color:var(--lit)}
+.more{background:none;border:none;color:var(--muted);font-size:12.5px;cursor:pointer;padding:4px 0;text-align:left}
+.empty{padding:18px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:14px;background:var(--surface)}
+
+/* history */
+.hist{display:flex;flex-direction:column;gap:10px}
+.hcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:6px 12px}
+.hcard h4{margin:0;font-size:15px}
+.hcard .meta{font-size:12.5px;color:var(--muted)}
+.hcard ol{grid-column:1/-1;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:4px 14px;font-size:14px}
+.hcard ol b{font-weight:500;color:var(--muted);font-size:12px;margin-right:6px}
+
+/* song table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:500;background:var(--soft);position:sticky;top:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--soft)}
+td.n{font-family:var(--f-num);font-variant-numeric:tabular-nums;color:var(--lit)}
+.lvl{font-family:var(--f-num)}
+
+/* editor */
+.editor{background:var(--surface);border:1px solid var(--lit);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px 14px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:inline-flex;gap:5px;align-items:center;font-size:13.5px;border:1px solid var(--line);border-radius:6px;padding:4px 9px;cursor:pointer}
+.notice{font-size:13px;color:var(--muted);background:var(--soft);border-radius:8px;padding:10px 12px;margin:0}
+@media (prefers-reduced-motion:no-preference){.slot,.hcard{transition:border-color .15s}}
+</style>
+
+<div class="wrap">
+  <section class="day" aria-label="주일 정보">
+    <div class="dayrow">
+      <button class="iconbtn" id="prevWeek" aria-label="한 주 전">◀ 한 주 전</button>
+      <input type="date" id="date">
+      <button class="iconbtn" id="nextWeek" aria-label="한 주 후">한 주 후 ▶</button>
+      <button class="iconbtn" id="thisSunday">이번 주일</button>
+    </div>
+    <div class="dayname" id="dayname"><small id="dayDate"></small><span id="dayTitle"></span></div>
+    <div id="readings" class="readings"></div>
+    <div class="chips" id="dayChips"></div>
+    <p class="daynote" id="dayNote"></p>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-rec" aria-selected="true">성가 추천</button>
+    <button class="tab" role="tab" id="tab-hist" aria-selected="false">부른 기록</button>
+    <button class="tab" role="tab" id="tab-songs" aria-selected="false">성가 목록</button>
+  </nav>
+
+  <p class="notice" id="dbNotice" hidden></p>
+
+  <!-- 추천 -->
+  <section id="pane-rec" style="display:flex;flex-direction:column;gap:16px">
+    <div class="controls">
+      <div class="ctl"><span class="lbl">이번 주 반주팀</span>
+        <div class="seg" id="teamSeg"><button data-v="성부">성부팀</button><button data-v="성자">성자팀</button><button data-v="성령">성령팀</button></div></div>
+      <div class="ctl"><span class="lbl">아이들이 아는 곡</span>
+        <div class="seg" id="famSeg"><button data-v="known">위주로</button><button data-v="mix">섞어서</button><button data-v="new">새 곡 도전</button></div></div>
+      <div class="ctl"><label for="maxDiff">난이도 상한 (팀 보정 반영)</label>
+        <select id="maxDiff"><option value="2">2 · 쉬움까지</option><option value="3">3 · 보통까지</option><option value="4">4 · 어려움까지</option><option value="5">5 · 제한 없음</option></select></div>
+      <div class="ctl"><label for="recentWeeks">최근에 부른 곡 빼기</label>
+        <select id="recentWeeks"><option value="0">빼지 않음</option><option value="2">최근 2주</option><option value="4">최근 4주</option><option value="6">최근 6주</option><option value="8">최근 8주</option></select></div>
+      <div class="ctl" style="grid-column:1/-1"><label for="kw">이번 주 말씀 주제 (선택 · 쉼표로 구분)</label>
+        <input type="text" id="kw" placeholder="예: 사랑, 잔치, 초대"></div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="reroll">다른 조합으로 다시 추천</button>
+      <button class="btn primary" id="confirm">이번 주 성가로 확정</button>
+      <span class="status" id="recStatus" role="status"></span>
+    </div>
+    <div class="slots" id="slots"></div>
+  </section>
+
+  <!-- 기록 -->
+  <section id="pane-hist" hidden>
+    <div class="hist" id="hist"></div>
+  </section>
+
+  <!-- 성가 목록 -->
+  <section id="pane-songs" hidden style="display:flex;flex-direction:column;gap:12px">
+    <div class="actions">
+      <input type="text" id="songSearch" placeholder="번호, 제목, 키워드로 찾기" style="flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:8px 10px">
+      <button class="btn primary" id="addSong">성가 추가</button>
+    </div>
+    <div id="editorHost"></div>
+    <div class="status" id="songCount"></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>번호</th><th>제목</th><th>전례 시기</th><th>위치</th><th>난이도</th><th>익숙함</th><th>팀 보정<br>성부·성자·성령</th><th>마지막으로 부른 날</th></tr></thead>
+      <tbody id="songRows"></tbody>
+    </table></div>
+  </section>
+</div>
+
+<script>
+/* ---------- 전례력 계산 ---------- */
+const DAY=86400000;
+const D=(y,m,d)=>new Date(Date.UTC(y,m-1,d));
+const add=(dt,n)=>new Date(dt.getTime()+n*DAY);
+const dow=dt=>dt.getUTCDay();
+const diffDays=(a,b)=>Math.round((a-b)/DAY);
+const iso=dt=>dt.toISOString().slice(0,10);
+const parseISO=s=>{const [y,m,d]=s.split('-').map(Number);return D(y,m,d)};
+const same=(a,b)=>a.getTime()===b.getTime();
+const WK=['주일','월요일','화요일','수요일','목요일','금요일','토요일'];
+
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return D(y,mo,da)}
+function advent1(y){const d3=D(y,12,3);return add(d3,-dow(d3))}
+function epiphany(y){const j2=D(y,1,2);return add(j2,(7-dow(j2))%7)}
+function baptism(y){const e=epiphany(y);return e.getUTCDate()>=7?add(e,1):add(e,7)}
+function holyFamily(y){for(let d=26;d<=31;d++){const x=D(y,12,d);if(dow(x)===0)return x}return D(y,12,30)}
+function sundaysBetween(a,b){/* Sundays in (a,b] */let n=0;for(let x=add(a,1);x<=b;x=add(x,1))if(dow(x)===0)n++;return n}
+
+const MONTH={3:'성 요셉 성월',5:'성모 성월',6:'예수 성심 성월',9:'순교자 성월',10:'묵주 기도 성월',11:'위령 성월'};
+// 연중 시기 주일과 겹치면 우선하는 고정 축일 (한국 교회 기준)
+const FIXED={'02-02':['주님 봉헌 축일','백'],'06-24':['성 요한 세례자 탄생 대축일','백'],'06-29':['성 베드로와 성 바오로 사도 대축일','홍'],
+ '08-06':['주님의 거룩한 변모 축일','백'],'08-15':['성모 승천 대축일','백'],'09-14':['성 십자가 현양 축일','홍'],'09-20':['성 김대건 안드레아 사제와 성 정하상 바오로와 동료 순교자들 대축일','홍'],
+ '11-01':['모든 성인 대축일','백'],'11-02':['위령의 날','자'],'11-09':['라테라노 대성전 봉헌 축일','백']};
+
+function liturgy(dt){
+  const y=dt.getUTCFullYear(), md=iso(dt).slice(5), wd=dow(dt), isSun=wd===0;
+  const a1=advent1(y), E=easter(y), ash=add(E,-46), pent=add(E,49), bap=baptism(y);
+  const LY=dt>=a1?y+1:y; const cycle=['다','가','나'][LY%3];
+  const r={cycle,season:'연중',songSeason:'연중',color:'녹',name:'',notes:[],marian:false,month:MONTH[dt.getUTCMonth()+1]||''};
+  const lastSun=add(dt,-wd);
+  if(dt>=a1 && dt<D(y,12,25)){
+    const n=Math.floor(diffDays(dt,a1)/7)+1; r.season=r.songSeason='대림'; r.color=(n===3&&isSun)?'장미':'자';
+    r.name=isSun?`대림 제${n}주일`:`대림 제${n}주간 ${WK[wd]}`;
+    if(n===3&&isSun) r.notes.push('자선 주일 · 장미색 제의를 쓸 수 있어요.');
+    if(md==='12-08'&&!isSun){r.name='한국 교회의 수호자 원죄 없이 잉태되신 복되신 동정 마리아 대축일';r.color='백';r.marian=true}
+    if(md==='12-09'&&dow(D(y,12,8))===0){r.name='원죄 없이 잉태되신 복되신 동정 마리아 대축일 (8일이 주일이라 옮김)';r.color='백';r.marian=true}
+  } else if(dt>=D(y,12,25) || dt<=bap){
+    r.season=r.songSeason='성탄'; r.color='백';
+    const hf = dt>=D(y,12,25)?holyFamily(y):holyFamily(y-1);
+    if(md==='12-25') r.name='주님 성탄 대축일';
+    else if(same(dt,hf)) r.name='예수, 마리아, 요셉의 성가정 축일';
+    else if(md==='01-01'){r.name='천주의 성모 마리아 대축일';r.marian=true}
+    else if(same(dt,epiphany(y))) r.name='주님 공현 대축일';
+    else if(same(dt,bap)) r.name='주님 세례 축일';
+    else if(dt>=D(y,12,25)&&dt<=D(y,12,31)) r.name=`성탄 팔일 축제 ${md.slice(3)*1-24}일째`;
+    else r.name=`성탄 시기 ${WK[wd]}`;
+  } else if(dt<ash){
+    const n=1+sundaysBetween(bap,dt); r.name=isSun?`연중 제${n}주일`:`연중 제${n}주간 ${WK[wd]}`;
+  } else if(dt<add(E,-3)){
+    r.season=r.songSeason='사순'; r.color='자';
+    const s1=add(ash,4);
+    if(dt<s1) r.name=same(dt,ash)?'재의 수요일':`재의 수요일 후 ${WK[wd]}`;
+    else{const n=Math.floor(diffDays(dt,s1)/7)+1;
+      if(n>=6) r.name=isSun?'주님 수난 성지 주일':`성주간 ${WK[wd]}`, r.color=isSun?'홍':'자';
+      else {r.name=isSun?`사순 제${n}주일`:`사순 제${n}주간 ${WK[wd]}`; if(n===4&&isSun){r.color='장미';r.notes.push('장미 주일 · 장미색 제의를 쓸 수 있어요.')}}}
+  } else if(dt<E){
+    r.season='파스카 성삼일'; r.songSeason='사순'; const k=diffDays(E,dt);
+    r.name=k===3?'주님 만찬 성목요일':k===2?'주님 수난 성금요일':'성토요일 · 부활 성야'; r.color=k===2?'홍':'백';
+  } else if(dt<=pent){
+    r.season=r.songSeason='부활'; r.color='백';
+    const n=Math.floor(diffDays(dt,E)/7)+1;
+    if(same(dt,E)) r.name='주님 부활 대축일';
+    else if(same(dt,pent)){r.name='성령 강림 대축일';r.color='홍'}
+    else if(isSun&&n===2) r.name='부활 제2주일 (하느님의 자비 주일)';
+    else if(isSun&&n===7){r.name='주님 승천 대축일';r.notes.push('한국 교회는 승천 대축일을 부활 제7주일에 지내요.')}
+    else if(dt<add(E,7)) r.name=`부활 팔일 축제 ${WK[wd]}`;
+    else r.name=isSun?`부활 제${n}주일`:`부활 제${n}주간 ${WK[wd]}`;
+  } else {
+    const ck=add(a1,-7); const n=34-diffDays(ck,lastSun)/7;
+    r.name=isSun?`연중 제${n}주일`:`연중 제${n}주간 ${WK[wd]}`;
+    if(same(dt,add(pent,7))){r.name='지극히 거룩하신 삼위일체 대축일';r.color='백'}
+    else if(same(dt,add(pent,14))){r.name='지극히 거룩하신 그리스도의 성체 성혈 대축일';r.color='백'}
+    else if(same(dt,add(pent,19))){r.name='지극히 거룩하신 예수 성심 대축일';r.color='백'}
+    else if(same(dt,ck)){r.name='온 누리의 임금이신 우리 주 예수 그리스도왕 대축일';r.color='백'}
+    else r.plainOT=true;
+  }
+  if(dt<ash&&r.season==='연중')r.plainOT=true;
+  if(r.plainOT&&FIXED[md]){if(isSun)r.notes.push(`원래는 ${r.name}이지만 이 축일이 우선해요.`);[r.name,r.color]=FIXED[md]}
+  if(md==='08-15') r.marian=true;
+  {const o31=D(y,10,31);const mission=add(o31,-dow(o31)-7);if(isSun&&same(dt,mission)&&r.season==='연중')r.notes.push('전교 주일이에요. 한국 교회는 이날 민족들의 복음화를 위한 미사 독서를 써요.')}
+  if(isSun&&r.season==='연중'&&Math.abs(diffDays(dt,D(y,9,20)))<=6&&md!=='09-20') r.notes.push('한국 순교자 대축일(9월 20일)을 이 주일로 옮겨 지내는 본당도 있어요.');
+  r.marianMonth=(dt.getUTCMonth()===4);
+  r.notes=r.notes.filter(Boolean);
+  return r;
+}
+const COLOR_NAME={녹:'녹색',자:'자색',백:'백색',홍:'홍색',장미:'장미색'};
+
+/* ---------- 상태 ---------- */
+const SLOTS=['입당','봉헌','성체','파견'];
+const TEAMS=['성부','성자','성령'];
+const S={readings:new Map(), rEdit:null, date:null,team:'성부', fam:'mix', maxDiff:4, recent:4, kw:'', seed:1, songs:new Map(), weeks:new Map(), picks:{}, overrides:{}, expanded:{}, canWrite:true, db:null, editing:null, delArm:false};
+const $=id=>document.getElementById(id);
+function pref(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem('sg:'+k));localStorage.setItem('sg:'+k,JSON.stringify(v))}catch(e){return null}}
+['team','fam','maxDiff','recent'].forEach(k=>{const v=pref(k);if(v!==null&&v!==undefined)S[k]=v});
+
+function nextSunday(){const n=new Date();const t=D(n.getFullYear(),n.getMonth()+1,n.getDate());return add(t,(7-dow(t))%7)}
+S.date=nextSunday();
+
+/* ---------- 추천 점수 ---------- */
+function rng(seed){let s=seed>>>0||1;return()=>{s^=s<<13;s>>>=0;s^=s>>17;s^=s<<5;s>>>=0;return s/4294967296}}
+function effDiff(song){const a=(song.adj&&song.adj[S.team])||0;return Math.max(1,Math.min(5,(song.diff||3)-a))}
+function lastSung(num,before){let best=null;for(const w of S.weeks.values()){if(before&&w.date>=before)continue;for(const sl of SLOTS){if(w.picks&&w.picks[sl]&&w.picks[sl].num===num){if(!best||w.date>best)best=w.date}}}return best}
+
+function scoreSong(song,slot,L,rand){
+  if(!(song.slots||[]).includes(slot))return null;
+  const seasons=song.seasons||[]; const target=L.songSeason; const why=[];
+  let s=50;
+  if(seasons.includes('전체')){s+=10;why.push('어느 시기나')}
+  else if(seasons.includes(target)){s+= target==='연중'?20:40; why.push(target==='연중'?'연중 곡':`${target} 시기 곡`)}
+  else if(seasons.includes('연중')){s-=(target==='사순'||target==='대림')?6:0; why.push({t:`${target} 전용 곡 아님`,w:1})}
+  else return null;
+  const marianSong=(song.note||'').includes('성모')||(song.keywords||[]).includes('성모');
+  if(marianSong){ if(L.marian||L.marianMonth){s+=25;why.push('성모 성월·축일')} else {s-=25} }
+  const fam=song.fam||3;
+  if(S.fam==='known'){s+=(fam-3)*9} else if(S.fam==='mix'){s+=(fam-3)*3} else {s+=(3-fam)*7}
+  why.push(`익숙함 ${fam}`);
+  const ed=effDiff(song); if(ed>S.maxDiff)return null;
+  s-=Math.max(0,ed-2)*3; why.push(`난이도 ${ed}${ed!==song.diff?` (기본 ${song.diff})`:''}`);
+  const kws=S.kw.split(/[,，\s]+/).map(x=>x.trim()).filter(Boolean);
+  if(kws.length){const hay=[song.title,...(song.keywords||[])].join(' ');const hit=kws.filter(k=>hay.includes(k));if(hit.length){s+=14*hit.length;why.push('주제: '+hit.join(', '))}}
+  const ls=lastSung(song.num,iso(S.date));
+  if(ls){const ago=Math.round(diffDays(S.date,parseISO(ls))/7);
+    if(S.recent>0&&ago<=S.recent)return null;
+    if(ago<=10){s-=Math.max(0,10-ago)*2;why.push(`${ago}주 전에 부름`)}}
+  s+=rand()*10;
+  return {song,score:s,why};
+}
+
+function recommend(){
+  const L=liturgy(S.date); const rand=rng(S.seed*7919+S.date.getTime()/DAY);
+  const lists={};
+  for(const sl of SLOTS){const arr=[];for(const song of S.songs.values()){const r=scoreSong(song,sl,L,rand);if(r)arr.push(r)}arr.sort((a,b)=>b.score-a.score);lists[sl]=arr}
+  const used=new Set(); const picks={};
+  for(const sl of SLOTS){const o=S.overrides[sl];if(o&&S.songs.has(o)){picks[sl]=o;used.add(o)}}
+  const order=[...SLOTS].filter(sl=>!picks[sl]).sort((a,b)=>lists[a].length-lists[b].length);
+  for(const sl of order){const c=lists[sl].find(x=>!used.has(x.song.num));if(c){picks[sl]=c.song.num;used.add(c.song.num)}}
+  S.picks=picks; return {lists,L};
+}
+
+/* ---------- 렌더 ---------- */
+function renderDay(){
+  const L=liturgy(S.date); $('date').value=iso(S.date);
+  document.body.dataset.lit=L.color;
+  const y=S.date.getUTCFullYear(),m=S.date.getUTCMonth()+1,d=S.date.getUTCDate();
+  $('dayDate').textContent=`${y}년 ${m}월 ${d}일 ${WK[dow(S.date)]==='주일'?'주일':WK[dow(S.date)]}`;
+  $('dayTitle').textContent=L.name;
+  const chips=[`<span class="chip lit">${L.cycle}해</span>`,`<span class="chip">${L.season} 시기</span>`,`<span class="chip"><span class="dot"></span>${COLOR_NAME[L.color]} 제의</span>`];
+  if(L.month)chips.push(`<span class="chip">${L.month}</span>`);
+  chips.push(`<span class="chip"><a href="https://maria.catholic.or.kr/mi_pr/missa/missa.asp?menu=missa&gomonth=${iso(S.date)}&missatype=DAY" target="_blank" rel="noopener">굿뉴스 매일미사에서 독서·복음 보기 ↗</a></span>`);
+  $('dayChips').innerHTML=chips.join('');
+  $('dayNote').textContent=L.notes.join(' ');
+  $('dayNote').hidden=!L.notes.length;
+  renderReadings();
+}
+function renderReadings(){
+  const host=$('readings'); const key=iso(S.date); const r=S.readings.get(key);
+  if(S.rEdit===key){
+    const v=r||{};
+    host.innerHTML=`<form class="rform" id="rForm">
+      <label class="fld"><span class="lbl">제1독서</span><input id="r-r1" type="text" value="${esc(v.r1||'')}" placeholder="예: 이사야서 25,6-10ㄱ"></label>
+      <label class="fld"><span class="lbl">화답송</span><input id="r-ps" type="text" value="${esc(v.ps||'')}"></label>
+      <label class="fld"><span class="lbl">제2독서</span><input id="r-r2" type="text" value="${esc(v.r2||'')}"></label>
+      <label class="fld"><span class="lbl">복음</span><input id="r-go" type="text" value="${esc(v.go||'')}"></label>
+      <label class="fld" style="grid-column:1/-1"><span class="lbl">메모 (선택)</span><input id="r-note" type="text" value="${esc(v.note||'')}"></label>
+      <div class="actions" style="grid-column:1/-1"><button class="btn primary" type="submit">독서 저장</button><button class="btn" type="button" id="rCancel">취소</button><span class="status" id="rStatus" role="status"></span></div></form>`;
+    return;
+  }
+  if(!r){
+    host.innerHTML=`<div class="rmeta"><span>${S.dbChecked?'이 날은 아직 독서 정보가 없어요. 위의 굿뉴스 링크에서 확인할 수 있어요.':'독서 정보를 불러오는 중이에요…'}</span>${S.canWrite&&S.db?'<button type="button" id="rEditBtn">직접 입력하기</button>':''}</div>`;
+    return;
+  }
+  const rows=[['제1독서',r.r1],['화답송',r.ps],['제2독서',r.r2],['복음',r.go]].filter(x=>x[1]);
+  host.innerHTML=`<dl class="rlist">${rows.map(([k,v])=>`<dt>${k}</dt><dd class="${k==='복음'?'go':''}">${esc(v)}</dd>`).join('')}</dl>
+    <div class="rmeta">${r.note?`<span>${esc(r.note)}</span>`:''}<span>출처: ${esc(r.source||'')}</span>${S.canWrite&&S.db?'<button type="button" id="rEditBtn">고치기</button>':''}</div>`;
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function whyHtml(why){return why.map(w=>typeof w==='string'?`<span>${esc(w)}</span>`:`<span class="warn">${esc(w.t)}</span>`).join('')}
+
+function renderRec(){
+  ['teamSeg','famSeg'].forEach(id=>{const key=id==='teamSeg'?'team':'fam';$(id).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S[key]))});
+  $('maxDiff').value=S.maxDiff; $('recentWeeks').value=S.recent;
+  const host=$('slots');
+  if(!S.songs.size){host.innerHTML=`<div class="empty">${S.db===null&&S.dbChecked?'저장소에 연결되지 않아 성가 목록을 불러올 수 없어요.':S.dbChecked?'아직 등록된 성가가 없어요. <b>성가 목록</b> 탭에서 첫 곡을 추가해 주세요.':'성가 목록을 불러오는 중이에요…'}</div>`;return}
+  const {lists,L}=recommend();
+  const saved=S.weeks.get(iso(S.date));
+  $('recStatus').textContent=saved?`이 주일은 이미 확정된 기록이 있어요 (부른 기록 탭). 다시 확정하면 덮어써요.`:'';
+  host.innerHTML=SLOTS.map(sl=>{
+    const list=lists[sl]; const pickNum=S.picks[sl]; const pick=list.find(x=>x.song.num===pickNum);
+    const pinned=S.overrides[sl]===pickNum;
+    const pickSong=S.songs.get(pickNum);
+    const alts=list.filter(x=>x.song.num!==pickNum&&!Object.values(S.picks).includes(x.song.num));
+    const show=S.expanded[sl]?alts.slice(0,15):alts.slice(0,4);
+    const top=pickSong?`<div class="pick"><div class="no">${pickSong.num}</div><div style="min-width:0"><div class="t">${esc(pickSong.title)}</div>
+      <div class="why">${pinned?'<span>직접 고른 곡</span>':''}${pick?whyHtml(pick.why):'<span class="warn">지금 조건에는 맞지 않는 곡</span>'}</div></div></div>`
+      :`<div class="empty">조건에 맞는 곡이 없어요. 난이도 상한을 올리거나 최근 곡 빼기를 줄여 보세요.</div>`;
+    return `<article class="slot"><div class="slot-h"><h3>${sl} 성가</h3><span class="count">후보 ${list.length}곡${pinned?` · <button class="more" data-unpin="${sl}">자동 추천으로 되돌리기</button>`:''}</span></div>${top}
+      ${show.length?`<ul class="alts">${show.map(x=>`<li><span class="no">${x.song.num}</span><span class="t" title="${esc(x.song.title)}">${esc(x.song.title)}</span><span class="sc">익숙 ${x.song.fam} · 난도 ${effDiff(x.song)}</span><button data-slot="${sl}" data-num="${x.song.num}">이 곡으로</button></li>`).join('')}</ul>`:''}
+      ${alts.length>4?`<button class="more" data-expand="${sl}">${S.expanded[sl]?'접기':`다른 후보 더 보기 (${Math.min(alts.length,15)-4}곡)`}</button>`:''}</article>`}).join('');
+}
+
+function renderHist(){
+  const host=$('hist'); const ws=[...S.weeks.values()].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!ws.length){host.innerHTML='<div class="empty">아직 확정한 주일이 없어요. 추천 화면에서 <b>이번 주 성가로 확정</b>을 누르면 여기에 쌓이고, 다음 추천부터 최근에 부른 곡을 빼 줘요.</div>';return}
+  host.innerHTML=ws.map(w=>`<div class="hcard"><div><h4>${esc(w.label||'')}</h4><div class="meta">${esc(w.date)} · ${esc(w.cycle||'')}해 · ${esc(w.team||'')}팀 반주</div></div>
+    <div class="actions">${S.canWrite?`<button class="btn" data-open="${esc(w.date)}">열기</button><button class="btn danger" data-delweek="${esc(w.date)}">${S.delWeek===w.date?'정말 지울까요?':'지우기'}</button>`:`<button class="btn" data-open="${esc(w.date)}">열기</button>`}</div>
+    <ol>${SLOTS.map(sl=>w.picks&&w.picks[sl]?`<li><b>${sl}</b><span class="num">${w.picks[sl].num}</span> ${esc(w.picks[sl].title)}</li>`:`<li><b>${sl}</b>—</li>`).join('')}</ol></div>`).join('');
+}
+
+function renderSongs(){
+  const q=$('songSearch').value.trim();
+  let arr=[...S.songs.values()].sort((a,b)=>a.num-b.num);
+  if(q)arr=arr.filter(s=>String(s.num).includes(q)||s.title.includes(q)||(s.keywords||[]).some(k=>k.includes(q))||(s.seasons||[]).some(k=>k.includes(q)));
+  $('songCount').textContent=`${arr.length}곡${q?` (전체 ${S.songs.size}곡 중)`:''}${S.canWrite?' · 줄을 누르면 고칠 수 있어요':''}`;
+  const today=iso(S.date);
+  $('songRows').innerHTML=arr.map(s=>`<tr data-edit="${s.num}"><td class="n">${s.num}</td><td>${esc(s.title)}</td><td>${esc((s.seasons||[]).join(', '))}</td><td>${esc((s.slots||[]).join(', '))}</td><td class="lvl">${s.diff}</td><td class="lvl">${s.fam}</td><td class="lvl">${TEAMS.map(t=>{const v=(s.adj||{})[t]||0;return v>0?'+'+v:v}).join(' · ')}</td><td class="num">${lastSung(s.num)||'—'}</td></tr>`).join('');
+  renderEditor();
+}
+
+const SEASON_OPTS=['연중','대림','성탄','사순','부활','전체'];
+function renderEditor(){
+  const host=$('editorHost'); const e=S.editing;
+  if(!e){host.innerHTML='';return}
+  const s=e.song;
+  const sel=(id,v,opts)=>`<select id="${id}">${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(v)?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+  const lv=[[1,'1 매우 쉬움'],[2,'2 쉬움'],[3,'3 보통'],[4,'4 어려움'],[5,'5 매우 어려움']];
+  const fv=[[1,'1 거의 모름'],[2,'2 일부만 앎'],[3,'3 절반 정도'],[4,'4 대부분 앎'],[5,'5 거의 다 앎']];
+  const av=[[-2,'-2 특히 어려움'],[-1,'-1 조금 어려움'],[0,'0 차이 없음'],[1,'+1 잘 소화'],[2,'+2 강점곡']];
+  host.innerHTML=`<form class="editor" id="songForm"><h3 style="font-family:var(--f-display);font-size:18px">${e.isNew?'새 성가 추가':`${s.num}번 고치기`}</h3>
+   <div class="grid2"><div class="fld"><label for="f-num" class="lbl">성가 번호</label><input id="f-num" type="text" inputmode="numeric" value="${s.num??''}" required></div>
+   <div class="fld" style="grid-column:span 2"><label for="f-title" class="lbl">제목</label><input id="f-title" type="text" value="${esc(s.title||'')}" required></div></div>
+   <div class="fld"><span class="lbl">전례 시기</span><div class="checks">${SEASON_OPTS.map(o=>`<label><input type="checkbox" name="f-season" value="${o}" ${(s.seasons||[]).includes(o)?'checked':''}>${o}</label>`).join('')}</div></div>
+   <div class="fld"><span class="lbl">사용 위치</span><div class="checks">${SLOTS.map(o=>`<label><input type="checkbox" name="f-slot" value="${o}" ${(s.slots||[]).includes(o)?'checked':''}>${o}</label>`).join('')}</div></div>
+   <div class="grid2"><div class="fld"><label for="f-diff" class="lbl">기본 난이도</label>${sel('f-diff',s.diff??3,lv)}</div><div class="fld"><label for="f-fam" class="lbl">아이들 익숙함</label>${sel('f-fam',s.fam??3,fv)}</div></div>
+   <div class="grid2">${TEAMS.map(t=>`<div class="fld"><label for="f-adj-${t}" class="lbl">${t}팀 보정</label>${sel('f-adj-'+t,(s.adj||{})[t]??0,av)}</div>`).join('')}</div>
+   <div class="fld"><label for="f-kw" class="lbl">키워드 (쉼표로 구분)</label><input id="f-kw" type="text" value="${esc((s.keywords||[]).join(', '))}"></div>
+   <div class="grid2"><div class="fld"><label for="f-verses" class="lbl">연결 성경 구절</label><input id="f-verses" type="text" value="${esc(s.verses||'')}" placeholder="예: 요한 15,1-8"></div><div class="fld"><label for="f-note" class="lbl">비고</label><input id="f-note" type="text" value="${esc(s.note||'')}"></div></div>
+   <div class="actions"><button class="btn primary" type="submit">저장</button><button class="btn" type="button" id="cancelEdit">닫기</button>${e.isNew?'':`<button class="btn danger" type="button" id="delSong">${S.delArm?'한 번 더 누르면 삭제':'이 곡 삭제'}</button>`}<span class="status" id="formStatus" role="status"></span></div></form>`;
+  host.scrollIntoView({block:'nearest'});
+}
+
+function renderAll(){renderDay();renderRec();renderHist();renderSongs();
+  $('confirm').hidden=!S.canWrite; $('addSong').hidden=!S.canWrite;}
+
+/* ---------- 이벤트 ---------- */
+$('readings').addEventListener('click',e=>{
+  if(e.target.id==='rEditBtn'){S.rEdit=iso(S.date);renderReadings()}
+  if(e.target.id==='rCancel'){S.rEdit=null;renderReadings()}
+});
+$('readings').addEventListener('submit',async e=>{e.preventDefault();
+  const key=S.rEdit; const st=$('rStatus'); if(!S.db||!key)return;
+  const doc={date:key,name:liturgy(parseISO(key)).name,r1:$('r-r1').value.trim(),ps:$('r-ps').value.trim(),r2:$('r-r2').value.trim(),go:$('r-go').value.trim(),note:$('r-note').value.trim(),source:'선생님이 직접 입력'};
+  if(!doc.r1&&!doc.go){st.textContent='제1독서나 복음 중 하나는 적어 주세요.';return}
+  st.textContent='저장하는 중…';
+  try{await S.db.collection('readings').doc(key).set(doc);S.rEdit=null;renderReadings()}catch(err){st.textContent=writeErr(err)}
+});
+function setDate(dt){S.rEdit=null;S.date=dt;S.overrides={};S.expanded={};renderAll()}
+$('date').addEventListener('change',e=>{if(e.target.value)setDate(parseISO(e.target.value))});
+$('prevWeek').onclick=()=>setDate(add(S.date,-7));
+$('nextWeek').onclick=()=>setDate(add(S.date,7));
+$('thisSunday').onclick=()=>setDate(nextSunday());
+$('teamSeg').onclick=e=>{const v=e.target.dataset.v;if(v){S.team=v;pref('team',v);renderRec();}};
+$('famSeg').onclick=e=>{const v=e.target.dataset.v;if(v){S.fam=v;pref('fam',v);renderRec();}};
+$('maxDiff').onchange=e=>{S.maxDiff=+e.target.value;pref('maxDiff',S.maxDiff);renderRec()};
+$('recentWeeks').onchange=e=>{S.recent=+e.target.value;pref('recent',S.recent);renderRec()};
+let kwT;$('kw').oninput=e=>{clearTimeout(kwT);kwT=setTimeout(()=>{S.kw=e.target.value;renderRec()},250)};
+$('reroll').onclick=()=>{S.seed++;S.overrides={};renderRec()};
+$('slots').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.slot){S.overrides[b.dataset.slot]=+b.dataset.num;renderRec()}
+  else if(b.dataset.expand){S.expanded[b.dataset.expand]=!S.expanded[b.dataset.expand];renderRec()}
+  else if(b.dataset.unpin){delete S.overrides[b.dataset.unpin];renderRec()}};
+
+function showTab(t){['rec','hist','songs'].forEach(x=>{$('tab-'+x).setAttribute('aria-selected',x===t);$('pane-'+x).hidden=x!==t});pref('tab',t)}
+['rec','hist','songs'].forEach(x=>$('tab-'+x).onclick=()=>showTab(x));
+{const t=pref('tab');if(t)showTab(t)}
+
+$('confirm').onclick=async()=>{
+  if(!S.db){$('recStatus').textContent='저장소에 연결되지 않아 저장할 수 없어요.';return}
+  const L=liturgy(S.date); const picks={};
+  for(const sl of SLOTS){const n=S.picks[sl];if(n&&S.songs.has(n))picks[sl]={num:n,title:S.songs.get(n).title}}
+  const btn=$('confirm');btn.disabled=true;$('recStatus').textContent='저장하는 중…';
+  try{await S.db.collection('weeks').doc(iso(S.date)).set({date:iso(S.date),label:L.name,cycle:L.cycle,season:L.season,team:S.team,picks,savedAt:new Date().toISOString()});
+    $('recStatus').textContent=`${L.name} 성가를 확정했어요.`;}
+  catch(err){$('recStatus').textContent=writeErr(err)}
+  btn.disabled=false;
+};
+function writeErr(err){if(err&&err.code==='invalid_argument'){S.canWrite=false;return '이 링크는 보기 전용이라 저장할 수 없어요.'}if(err&&err.code==='quota_exceeded')return '저장 공간이 가득 찼어요. 오래된 기록을 지워 주세요.';return '저장하지 못했어요. 잠시 후 다시 눌러 주세요.'}
+
+$('hist').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.open){showTab('rec');S.date=parseISO(b.dataset.open);const w=S.weeks.get(b.dataset.open);S.overrides={};if(w&&w.picks)for(const sl of SLOTS)if(w.picks[sl])S.overrides[sl]=w.picks[sl].num;S.expanded={};renderAll();if(w&&w.team){S.team=w.team;renderRec()}}
+  else if(b.dataset.delweek){if(S.delWeek!==b.dataset.delweek){S.delWeek=b.dataset.delweek;renderHist();return}
+    S.delWeek=null;try{await S.db.collection('weeks').doc(b.dataset.delweek).delete()}catch(err){alertStatus(writeErr(err))}}};
+function alertStatus(t){$('recStatus').textContent=t}
+
+$('songSearch').oninput=()=>renderSongs();
+$('addSong').onclick=()=>{S.editing={isNew:true,song:{seasons:['연중'],slots:[],diff:3,fam:3,adj:{성부:0,성자:0,성령:0},keywords:[]}};S.delArm=false;renderEditor()};
+$('songRows').onclick=e=>{if(!S.canWrite)return;const tr=e.target.closest('tr');if(!tr)return;const s=S.songs.get(+tr.dataset.edit);if(s){S.editing={isNew:false,orig:s.num,song:JSON.parse(JSON.stringify(s))};S.delArm=false;renderEditor()}};
+$('editorHost').addEventListener('click',async e=>{
+  if(e.target.id==='cancelEdit'){S.editing=null;renderEditor()}
+  if(e.target.id==='delSong'){if(!S.delArm){S.delArm=true;e.target.textContent='한 번 더 누르면 삭제';return}
+    try{await S.db.collection('songs').doc(String(S.editing.orig)).delete();S.editing=null;renderEditor()}catch(err){$('formStatus').textContent=writeErr(err)}}
+});
+$('editorHost').addEventListener('submit',async e=>{e.preventDefault();
+  const st=$('formStatus');const num=parseInt($('f-num').value,10);const title=$('f-title').value.trim();
+  const seasons=[...document.querySelectorAll('input[name=f-season]:checked')].map(x=>x.value);
+  const slots=[...document.querySelectorAll('input[name=f-slot]:checked')].map(x=>x.value);
+  if(!num||num<1){st.textContent='성가 번호를 숫자로 적어 주세요.';return}
+  if(!title){st.textContent='제목을 적어 주세요.';return}
+  if(!seasons.length||!slots.length){st.textContent='전례 시기와 사용 위치를 하나 이상 골라 주세요.';return}
+  const ed=S.editing; if((ed.isNew||ed.orig!==num)&&S.songs.has(num)){st.textContent=`${num}번은 이미 목록에 있어요.`;return}
+  if(!S.db){st.textContent='저장소에 연결되지 않아 저장할 수 없어요.';return}
+  const doc={num,title,seasons,slots,verses:$('f-verses').value.trim(),keywords:$('f-kw').value.split(/[,，]/).map(x=>x.trim()).filter(Boolean),
+    diff:+$('f-diff').value,fam:+$('f-fam').value,adj:Object.fromEntries(TEAMS.map(t=>[t,+$('f-adj-'+t).value])),note:$('f-note').value.trim()};
+  st.textContent='저장하는 중…';
+  try{await S.db.collection('songs').doc(String(num)).set(doc);
+    if(!ed.isNew&&ed.orig!==num)await S.db.collection('songs').doc(String(ed.orig)).delete();
+    S.editing=null;renderEditor();}catch(err){st.textContent=writeErr(err)}
+});
+
+/* ---------- 저장소 연결 ---------- */
+renderAll();
+(async()=>{
+  const c=window.claude; let db=null,user=null;
+  try{db=c?await c.use('db'):null}catch(e){db=null}
+  try{user=c?await c.use('user'):null}catch(e){user=null}
+  S.db=db;S.dbChecked=true;
+  if(user&&user.can){try{const w=await user.can('data.write');if(w===false)S.canWrite=false}catch(e){}}
+  if(!db){S.canWrite=false;$('dbNotice').hidden=false;$('dbNotice').textContent='지금 이 화면에서는 공유 저장소에 연결할 수 없어 성가 목록과 기록을 불러오지 못했어요. claude.ai에 로그인한 상태로 열어 주세요.';renderAll();return}
+  if(!S.canWrite){$('dbNotice').hidden=false;$('dbNotice').textContent='보기 전용으로 열려 있어요. 추천은 볼 수 있지만 확정이나 성가 수정은 편집 권한이 있는 선생님만 할 수 있어요.'}
+  let songsReady=false;
+  db.collection('songs').onSnapshot(snap=>{S.songs=new Map(snap.docs.map(d=>{const v=d.data();return [v.num,v]}));songsReady=true;renderRec();renderSongs()},
+    ()=>{$('dbNotice').hidden=false;$('dbNotice').textContent='성가 목록을 불러오다 연결이 끊겼어요. 페이지를 새로고침해 주세요.'});
+  db.collection('readings').onSnapshot(snap=>{S.readings=new Map(snap.docs.map(d=>[d.id,d.data()]));renderReadings()},()=>{});
+  db.collection('weeks').onSnapshot(snap=>{S.weeks=new Map(snap.docs.map(d=>[d.id,d.data()]));renderRec();renderHist();renderSongs()},()=>{});
+  renderAll();
+})();
+</script>
+
+</body></html>
